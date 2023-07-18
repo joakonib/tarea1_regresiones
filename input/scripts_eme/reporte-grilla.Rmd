@@ -1,0 +1,521 @@
+---
+title: |
+ | \vspace{5cm} Documento de casos no validados
+subtitle: |
+ Encuesta de Microemprendimiento (EME)
+author: | 
+ | 
+ | \vspace{6cm} .
+date: "`r Sys.Date()`"
+header-includes:
+- \usepackage{titling}
+- \pretitle{\begin{center}\LARGE\includegraphics[width=3cm]{input/imagenes/logo_ine.png}\\[\bigskipamount]}
+- \posttitle{\end{center}}
+- \usepackage[fontsize=12pt]{scrextend}
+- \usepackage{floatrow}
+- \usepackage{multicol}
+- \floatsetup[figure]{capposition=top}
+- \floatsetup[table]{capposition=top}
+- \floatplacement{figure}{H}
+- \floatplacement{table}{h}
+
+output: 
+  bookdown::pdf_document2:
+    toc: no
+    highlight: tango
+    number_sections: TRUE
+    pandoc_args: !expr rmdfiltr::add_wordcount_filter()
+bibliography: input/bib/bib.bib
+linkcolor: black
+urlcolor: blue
+link-citations: yes
+csl: input/Bib/apa.csl
+---
+
+
+\newpage
+
+\setcounter{tocdepth}{2}
+\renewcommand{\contentsname}{Tabla de contenidos}
+\tableofcontents
+
+\newpage
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(comment=NA, prompt=FALSE, cache=FALSE, echo=TRUE, results='asis', message = F, warning = F, eval = T)
+summarytools::st_options(bootstrap.css     = FALSE,
+           plain.ascii       = FALSE,   
+           style             = "rmarkdown",
+           dfSummary.silent  = TRUE, 
+           footnote          = NA,
+           subtitle.emphasis = FALSE,
+           headings =  F,
+           lang =  "es")
+summarytools::st_css()
+library(ggplot2); library(sjPlot); library(sjmisc); library(tidyverse); library(kableExtra); library(car)
+theme_set(theme_sjplot2())
+options(knitr.kable.NA = 'No sabe/No responde', kableExtra.auto_format = FALSE)
+```
+
+```{r include=FALSE}
+load("output/data/grilla.RData")
+```
+
+
+# Presentación
+
+El presente documento tiene por objeto detallar los casos que no superaron la suficiencia requerida para ser validados
+
+# Casos rechazados
+```{r echo=FALSE}
+grilla_int %>% select(FOLIO, N_FORMULARIO, validador_full) %>% 
+  filter(validador_full==FALSE) %>% 
+  kable(., digits = 2, 
+        caption = "Casos rechazados", 
+        row.names = T,
+        col.names = c("Folio","N.form", "Val.Full"),
+        format = "latex") %>%
+  kable_classic(full_width = F) %>%
+  kable_styling(latex_options = c("striped")) %>% 
+  footnote(general = "Piloto VII Encuesta de Microemprendimiento (EME) 2022")
+  
+```
+
+
+# Detalle del rechazo por sección de interés
+
+```{r echo=FALSE}
+grilla_int %>% select(FOLIO, N_FORMULARIO, validador_full, validador1, validador2, validador3, validador4, validador5) %>% 
+  filter(validador_full==FALSE) %>% 
+  kable(., digits = 2, 
+        caption = "Detalle por sección de interés de casos rechazados", 
+        row.names = T,
+        col.names = c("Folio","N.form", "Val.Full", "Val.a", "Val.b", "Val.c", "Val.d", "Val.e"),
+        format = "latex") %>%
+  kable_classic(full_width = F) %>%
+  kable_styling(latex_options = c("striped")) %>% 
+  footnote(general = "Piloto VII Encuesta de Microemprendimiento (EME) 2022")
+                      
+```
+
+
+
+## Variables para imputar
+
+Deberá tener información válida en las 3 preguntas utilizadas para imputar 15 puntos en total. Para considerar que las preguntas C1 y C2 (a, b) tienen respuesta válida, es necesario que éstas puedan ser clasificadas en algún oficio o actividad, en cuyo caso obtienen 5 puntos cada una. En caso contrario, es decir cuando la pregunta entrega información en base a la cual no es posible realizar la clasificación, se le asignará puntaje 0. Por su parte, la pregunta por las horas trabajadas obtendrá puntaje 5 si entrega el valor de horas a la semana, o bien es posible calcular dicho valor con las horas diarias y los días; en caso contrario, se le asignará 0 puntos.
+
+```{r echo=FALSE}
+grilla_int %>% select(FOLIO, N_FORMULARIO,  validador_full, validador1) %>% 
+  filter(validador_full==FALSE) %>% 
+  kable(., digits = 2, 
+        caption = "Sección de interés: Variables para imputar", 
+        row.names = T,
+        col.names = c("Folio","N.form", "Val.Full", "Val.a"),
+        format = "latex") %>%
+  kable_classic(full_width = F) %>%
+  kable_styling(latex_options = c("striped")) %>% 
+  footnote(general = "Piloto VII Encuesta de Microemprendimiento (EME) 2022")
+  
+```
+
+
+### Variables a completar
+
+```{r echo=FALSE}
+grilla_int %>% select(FOLIO, N_FORMULARIO, validador_full, validador1,
+                      vi_c1, vi_c2_a_b, vi_c6) %>% 
+  filter(validador_full==FALSE) %>% 
+   kable(., digits = 2, 
+        caption = "Sección a completar", 
+        row.names = T,
+        col.names = c("Folio","N.form", "Val.Full", "Val.a", "Val.c1", "Val.c2-a-b", "Val.c6"),
+        format = "latex") %>%
+  kable_classic(full_width = F) %>%
+  kable_styling(latex_options = c("striped")) %>% 
+  footnote(general = "Piloto VII Encuesta de Microemprendimiento (EME) 2022") 
+  
+```
+
+Detalle de variables 
+
+- vi_c1: 
+  - c1 ¿Cuál es la actividad principal de su negocio o actividad por cuenta propia?
+
+- vi_c2_a_b:
+  - c2_a ¿Cuál es el oficio, labor u ocupación principal que realiza como trabajador independiente? (C2.a Ocupación)
+  - c2_b ¿Cuál es el oficio, labor u ocupación principal que realiza como trabajador independiente? (C2.b Tareas que realiza)
+
+- vi_c6:
+  - c6_1 Habitualmente, ¿cuántos días y horas trabaja semanalmente en su negocio o actividad por cuenta propia? (Días)
+  - c6_2 Habitualmente, ¿cuántos días y horas trabaja semanalmente en su negocio o actividad por cuenta propia? (Horas por día)
+  - c6_3 Habitualmente, ¿cuántos días y horas trabaja semanalmente en su negocio o actividad por cuenta propia? (Horas semanales)
+
+
+\newpage
+
+# Validadores compuestos
+  
+```{r echo=FALSE}
+grilla_int %>% select(FOLIO,N_FORMULARIO,  validador_full, validador1, 
+                      vi_c2_a_b, c2_a, c2_b) %>% 
+  filter(validador_full==FALSE) %>% 
+   kable(., digits = 2, 
+        caption = "Variable a completar", 
+        row.names = T,
+        col.names = c("Folio","N.form", "Val.Full", "Val.a","Val.c2-a-b", "Ocupación", "Tareas"),
+        format = "latex") %>%
+  kable_classic(full_width = F) %>%
+  kable_styling(latex_options = c("striped",  "scale_down")) %>% 
+  footnote(general = "Piloto VII Encuesta de Microemprendimiento (EME) 2022")
+
+```
+
+```{r echo=FALSE}
+grilla_int %>% select(FOLIO, N_FORMULARIO, validador_full, validador1, 
+                      vi_c2_a_b, c6_1, c6_2, c6_3) %>% 
+  filter(validador_full==FALSE) %>% 
+  kable(., digits = 2, 
+        caption = "Variable a completar", 
+        row.names = T,
+        col.names = c("Folio","N.form", "Val.Full", "Val.a","Val.c6", "Días", "Horas diarias", "Horas semanales"),
+        format = "latex") %>%
+  kable_classic(full_width = F) %>%
+  kable_styling(latex_options = c("striped",  "scale_down")) %>% 
+  footnote(general = "Piloto VII Encuesta de Microemprendimiento (EME) 2022") 
+
+```
+
+## Identificación de las unidades económicas del sector informal
+
+En las variables de identificación del sector informal, se aceptará un mínimo de puntos 25, es decir que los cuestionarios deben tener una respuesta válida en las preguntas E1 y E3 de manera simultánea, y en al menos E7 o E11. Esto quiere decir que es necesario saber obligatoriamente si el negocio o la actividad por cuenta propia lleva o no registro de cuentas y si ha iniciado actividades en el SII, además de saber si ha realizado ciertos trámites o si ha pagado algún tipo de cotizaciones, cualquiera de estas últimas dos indistintamente. Para estas últimas dos preguntas, se entregarán los 5 puntos correspondientes por pregunta si es que presenta respuestas válidas en todas las sub-preguntas de la grilla, es decir respuestas distintas a no sabe o no responde. Si en las tres sub-preguntas por grilla se marca una o más veces la alternativa no sabe o no responde, se asignará puntaje 0. 
+
+```{r echo=FALSE}
+grilla_int %>% select(FOLIO,N_FORMULARIO, validador_full, validador2) %>% 
+  filter(validador_full==FALSE) %>% 
+  kable(., digits = 2, 
+        caption = "Sección de interés: Identificación de las unidades económicas del sector informal", 
+        row.names = T,
+        col.names = c("Folio","N.form", "Val.Full", "Val.b"),
+        format = "latex") %>%
+  kable_classic(full_width = F) %>%
+  kable_styling(latex_options = c("striped")) %>% 
+  footnote(general = "Piloto VII Encuesta de Microemprendimiento (EME) 2022")
+  
+```
+
+
+\newpage
+
+### Variables a completar
+
+```{r echo=FALSE}
+grilla_int %>% select(FOLIO,N_FORMULARIO, validador_full, validador2, 
+                      vi_e1, vi_e3, vi_e7, vi_e11) %>% 
+  filter(validador_full==FALSE) %>% 
+ kable(., digits = 2, 
+        caption = "Sección a completar", 
+        row.names = T,
+        col.names = c("Folio","N.form", "Val.Full", "Val.b", "Val.e1", "Val.e3", "Val.e7", "Val.e11"),
+        format = "latex") %>%
+  kable_classic(full_width = F) %>%
+  kable_styling(latex_options = c("striped",  "scale_down")) %>% 
+  footnote(general = "Piloto VII Encuesta de Microemprendimiento (EME) 2022") 
+  
+```
+
+Detalle de variables
+
+- vi_e1: 
+  - e1 ¿Lleva algún tipo de registro de las cuentas de su negocio o actividad por cuenta propia?
+
+- vi_e3:
+  - e3 En su actual negocio o actividad por cuenta propia, ¿inició actividades en el Servicio de Impuestos Internos (SII)?
+  
+- vi_e7: 
+  - e7_1 En su actual negocio o actividad por cuenta propia ¿ha realizado o está realizando alguno de los siguientes trámites? (Declaración de IVA)
+  - e7_2 En su actual negocio o actividad por cuenta propia ¿ha realizado o está realizando alguno de los siguientes trámites? (Declaración de impuestos a la renta)
+  - e7_3 En su actual negocio o actividad por cuenta propia ¿ha realizado o está realizando alguno de los siguientes trámites? (Permisos sanitarios)
+
+- vi_e11:
+  - e11_1 Como trabajador independiente, ¿durante los últimos doce meses usted ha realizado alguno de los siguientes tipos de cotizaciones? (Salud, Isapre o Fonasa)
+  - e11_2 Como trabajador independiente, ¿durante los últimos doce meses usted ha realizado alguno de los siguientes tipos de cotizaciones? (AFP o INP, IPS)
+  - e11_3 Como trabajador independiente, ¿durante los últimos doce meses usted ha realizado alguno de los siguientes tipos de cotizaciones? (Seguro de accidentes laborales)
+
+
+\newpage
+
+```{r echo=FALSE}
+grilla_int %>% select(FOLIO, N_FORMULARIO, validador_full, validador2, 
+                      vi_e7, e7_1, e7_2, e7_3) %>% 
+  filter(validador_full==FALSE) %>% 
+   kable(., digits = 2, 
+        caption = "Variable a completar", 
+        row.names = T,
+        col.names = c("Folio","N.form", "Val.Full", "Val.b", "Val.e7", "IVA", "Impuesto a la renta", "Permiso sanitario"),
+        format = "latex") %>%
+  kable_classic(full_width = F) %>%
+  kable_styling(latex_options = c("striped",  "scale_down")) %>% 
+  footnote(general = "Piloto VII Encuesta de Microemprendimiento (EME) 2022")  
+
+```
+
+
+```{r echo=FALSE}
+grilla_int %>% select(FOLIO, N_FORMULARIO, validador_full, validador2, 
+                      vi_e11, e11_1, e11_2, e11_3) %>% 
+  filter(validador_full==FALSE) %>% 
+  kable(., digits = 2, 
+        caption = "Variable a completar", 
+        row.names = T,
+        col.names = c("Folio","N.form", "Val.Full", "Val.b", "Val.e11", "Salud", "AFP e INP", "Seg. Accidentes laboral"),
+        format = "latex") %>%
+  kable_classic(full_width = F) %>%
+  kable_styling(latex_options = c("striped",  "scale_down")) %>% 
+  footnote(general = "Piloto VII Encuesta de Microemprendimiento (EME) 2022") 
+```
+
+
+## Estimación del valor agregado de las unidades de producción
+
+Se podrá obtener un máximo de 100 puntos y un mínimo de 70 para que la encuesta sea considerada válida. Los puntajes se dividen en cuatro subgrupos: gastos (D1, D2, D3), ingresos (D5, D6), ganancias (D7a, D7b) y autoconsumo (D14). En el caso de los gastos, se debe tener respuesta en D1 o D2, cualquiera de las dos en caso que corresponda, o en ninguna de ellas si así corresponde, además de tener completa la grilla D3 para obtener el puntaje 30. Si una de estas condiciones no se da, entonces tendrá puntaje 0. 
+
+Para el caso de los ingresos, debe estar completa de grilla D5 o D6, dependiendo de cuál le corresponda; en el caso de las ganancias, es necesario responder tanto D7a (ganancia mes anterior) D7b (ganancia total y promedio últimos 12 meses). Finalmente, para el caso del autoconsumo, es necesario responder la pregunta D14 cuando aplica para obtener el puntaje, mientras que si entrega una respuesta válida en D13 y no le corresponde responder D14 (es decir, si responde que no destinó algo para el consumo, o que no aplica en el caso), de todas maneras obtiene la puntuación 10. Si en D14 no tiene respuesta cuando sí le correspondía, entonces obtiene 0 puntos. 
+
+
+```{r echo=FALSE}
+grilla_int %>% select(FOLIO,N_FORMULARIO, validador_full, validador3) %>% 
+  filter(validador_full==FALSE) %>% 
+  kable(., digits = 2, 
+        caption = "Sección de interés: Estimación del valor agregado de las unidades de producción", 
+        row.names = T,
+        col.names = c("Folio","N.form", "Val.Full", "Val.c"),
+        format = "latex") %>%
+  kable_classic(full_width = F) %>%
+  kable_styling(latex_options = c("striped")) %>% 
+  footnote(general = "Piloto VII Encuesta de Microemprendimiento (EME) 2022")
+  
+```
+
+
+\newpage
+
+### Variables a completar
+
+```{r echo=FALSE}
+grilla_int %>% select(FOLIO, N_FORMULARIO, validador_full, validador3, 
+                      vi_d1_2_3, vi_d5_6, vi_d7a, vi_d7b, vi_d14) %>% 
+  filter(validador_full==FALSE) %>% 
+  kable(., digits = 2, 
+        caption = "Sección a completar", 
+        row.names = T,
+        col.names = c("Folio","N.form", "Val.Full", "Val.c", "Val.d123", "Val.d56", "Val.d7a", "Val.d7b", "Val.d714"),
+        format = "latex") %>%
+  kable_classic(full_width = F) %>%
+  kable_styling(latex_options = c("striped",  "scale_down")) %>% 
+  footnote(general = "Piloto VII Encuesta de Microemprendimiento (EME) 2022")
+  
+```
+
+Detalle de variables
+
+- vi_d1_2_3: 
+  - d1 En el último mes que trabajó, ¿cuánto pagó por el arriendo del local o la instalación en la que trabaja? 
+  - d2 Si tuviese que pagar un arriendo mensual por el local, las instalaciones en las que trabaja o el espacio que utiliza en esta vivienda, ¿cuánto estima que le costaría?
+  - d3 En los últimos 12 meses, ¿tuvo que incurrir en alguno de los siguientes gastos del negocio?
+    - d3_b. ¿Cuál es la periodicidad de ese gasto?
+    - d3_c. ¿Cuánto fue el gasto promedio ______?
+    - d3_d. En un mes promedio ¿Cuántos días incurrió en este gasto?
+
+- vi_d5_6:
+  - d5 En los últimos 12 meses, ¿realizó alguna de las siguientes actividades agropecuarias?
+    - d5_c ¿Cuál es la periodicidad de ese ingreso?
+    - d5_d ¿Cuánto fue el monto _____?
+    - d5_e En un mes promedio ¿Cuántos días recibió este ingreso?
+  - d6 En los últimos 12 meses, en relación a su negocio o actividad principal:
+    - d6_b ¿Cuál es la periodicidad de ese ingreso?
+    - d6_c ¿Cuánto fue el monto _____?
+    - d6_d En un mes promedio ¿Cuántos días recibió este ingreso?
+- vi_d7a: 
+  - d7_a Descontando todos los gastos del negocio o actividad, ¿cuánto fue la ganancia por la venta de sus productos o servicios el mes anterior?
+  
+\newpage
+
+- vi_d7b:
+  - d7_b_1 Descontando todos los gastos del negocio o actividad, ¿cuánto fue la ganancia por la venta de sus productos o servicios en… (promedio mensual los últimos 12 meses?)
+  - d7_b_2 Descontando todos los gastos del negocio o actividad, ¿cuánto fue la ganancia por la venta de sus productos o servicios en… (total en los últimos 12 meses?)
+  
+- vi_d14:
+  - d14 En los últimos 12 meses, ¿En cuánto estima el valor promedio mensual de lo que destinó al consumo propio del hogar?
+
+
+```{r echo=FALSE}
+grilla_int %>% select(FOLIO, N_FORMULARIO, validador_full, validador3, 
+                      vi_d1_2_3, d1, d2, 
+                      starts_with("d3_b"), starts_with("d3_c"), starts_with("d3_d")) %>% 
+  filter(validador_full==FALSE) %>% 
+  kable(., digits = 2, 
+        caption = "Variable a completar", 
+        row.names = T,
+        format = "latex") %>%
+  kable_classic(full_width = F) %>%
+  kable_styling(latex_options = c("striped",  "scale_down")) %>% 
+  footnote(general = "Piloto VII Encuesta de Microemprendimiento (EME) 2022")
+
+```
+
+
+```{r echo=FALSE}
+grilla_int %>% select(FOLIO, N_FORMULARIO, validador_full, validador3, 
+                      vi_d5_6, d4, starts_with("d5c"), 
+                      starts_with("d3_d"), starts_with("d3_e"), 
+                      starts_with("d6_b"), starts_with("d6_c"), 
+                      starts_with("d6_d")) %>% 
+  filter(validador_full==FALSE) %>% 
+   kable(., digits = 2, 
+        caption = "Variable a completar", 
+        row.names = T,
+        format = "latex") %>%
+  kable_classic(full_width = F) %>%
+  kable_styling(latex_options = c("striped",  "scale_down")) %>% 
+  footnote(general = "Piloto VII Encuesta de Microemprendimiento (EME) 2022")
+
+
+```
+
+```{r echo=FALSE}
+grilla_int %>% select(FOLIO,N_FORMULARIO, validador_full, validador3, 
+                      vi_d7b, d7_b_1, d7_b_2) %>% 
+  filter(validador_full==FALSE) %>% 
+  kable(., digits = 2, 
+        caption = "Variable a completar", 
+        row.names = T,
+        col.names = c("Folio","N.form", "Val.Full", "Val.c", "Val.d7b", "Promedio anual", "Total anual"),
+        format = "latex") %>%
+  kable_classic(full_width = F) %>%
+  kable_styling(latex_options = c("striped",  "scale_down")) %>% 
+  footnote(general = "Piloto VII Encuesta de Microemprendimiento (EME) 2022")
+
+
+```
+
+## Estimación de remuneraciones
+
+Para el caso de la estimación de remuneraciones, una encuesta será calificada como válida si responde al menos F2i, F2d y F2e o bien si responde F2h y alguna de las variables anteriores. Es decir que del máximo de 50 puntos, se cumplirá con el requisito de encuesta lograda si obtiene al menos 30 puntos, registrando respuestas válidas tanto en horas semanales trabajadas, edad y nivel educacional en conjunto, o en el monto total bruto de su pago más una de las otras tres preguntas. Si las respuestas entregadas corresponden a las categorías no sabe o no responde, no se considerarán como válidas. 
+
+```{r echo=FALSE}
+grilla_int %>% select(FOLIO, N_FORMULARIO, validador_full, validador4) %>% 
+  filter(validador_full==FALSE) %>% 
+   kable(., digits = 2, 
+        caption = "Sección de interés: Estimación de remuneraciones", 
+        row.names = T,
+        col.names = c("Folio","N.form", "Val.Full", "Val.d"),
+        format = "latex") %>%
+  kable_classic(full_width = F) %>%
+  footnote(general = "Piloto VII Encuesta de Microemprendimiento (EME) 2022") 
+  
+```
+
+### variables a completar
+
+```{r echo=FALSE}
+grilla_int %>% select(FOLIO, N_FORMULARIO, validador_full, validador4, 
+                      f1, vi_f2h, vi_f2i, vi_f2d, vi_f2e) %>% 
+  filter(validador_full==FALSE) %>% 
+  kable(., digits = 2, 
+        caption = "Sección a completar", 
+        row.names = T,
+        col.names = c("Folio","N.form", "Val.Full", "Val.d", "f1", "f2h", "f2i", "f2d", "f2e"),
+        format = "latex") %>%
+  kable_classic(full_width = F) %>%
+  kable_styling(latex_options = c("striped")) %>% 
+  footnote(general = "Piloto VII Encuesta de Microemprendimiento (EME) 2022") 
+  
+```
+
+Detalle de variables
+
+- vi_f2h: 
+  - f2_h Ahora le haré preguntas sobre ciertas características de las y los trabajadores que laboran en su negocio o actividad por cuenta propia. (Monto total bruto que recibe)
+- vi_f2i:
+  - f2_i Ahora le haré preguntas sobre ciertas características de las y los trabajadores que laboran en su negocio o actividad por cuenta propia. (Horas semanales que trabaja)
+- vi_f2d:
+  - f2_d Ahora le haré preguntas sobre ciertas características de las y los trabajadores que laboran en su negocio o actividad por cuenta propia. (¿Qué edad tiene?)
+- vi_f2e:
+  - f2_e Ahora le haré preguntas sobre ciertas características de las y los trabajadores que laboran en su negocio o actividad por cuenta propia. (Nivel educacional más alto alcanzado) 
+  
+Variable condición
+
+- f1: El mes anterior, ¿tuvo trabajadores empleados o contratados por al menos una hora a la semana? Incluya familiares no remunerados y socios trabajadores.
+
+
+
+## Factor de expansión
+
+Para ser considerada válida, la encuesta deberá tener respuesta en C3 dueños o socios tanto para hombres como para mujeres, independiente del número entregado. Además, deberá tener respuesta en C4, y en C5 cuando corresponda. Es necesario que no existan problemas de coherencia entre las tres variables involucradas en la estimación de unidades económicas. En este caso, es necesario tener toda la información solicitada para obtener puntaje. 
+
+```{r echo=FALSE}
+grilla_int %>% select(FOLIO, N_FORMULARIO, validador_full, validador5) %>% 
+  filter(validador_full==FALSE) %>% 
+  kable(., digits = 2, 
+        caption = "Sección de interés: Factor de expansión", 
+        row.names = T,
+        col.names = c("Folio","N.form", "Val.Full", "Val.e"),
+        format = "latex") %>%
+  kable_classic(full_width = F) %>%
+  kable_styling(latex_options = c("striped")) %>% 
+  footnote(general = "Piloto VII Encuesta de Microemprendimiento (EME) 2022") 
+  
+```
+
+### Variables a completar
+
+
+```{r echo=FALSE}
+grilla_int %>% select(FOLIO,N_FORMULARIO, validador_full, validador5, 
+                      vi_c3, vi_c4, vi_c5) %>% 
+  filter(validador_full==FALSE) %>% 
+  kable(., digits = 2, 
+        caption = "Sección a completar", 
+        row.names = T,
+        col.names = c("Folio","N.form", "Val.Full", "Val.e", "Val.c3", "Val.c4", "Val.c5"),
+        format = "latex") %>%
+  kable_classic(full_width = F) %>%
+  kable_styling(latex_options = c("striped")) %>% 
+  footnote(general = "Piloto VII Encuesta de Microemprendimiento (EME) 2022") 
+  
+```
+
+
+\newpage
+
+Detalle de variables
+
+- vi_c3: 
+  - c3_1 Actualmente, ¿cuántas personas, incluyéndose a usted, son socios/as o dueños/as trabajadores/as de su negocio o actividad cuenta propia? (Hombres)
+  - c3_2 Actualmente, ¿cuántas personas, incluyéndose a usted, son socios/as o dueños/as trabajadores/as de su negocio o actividad cuenta propia? (Mujeres)
+- vi_c4:
+  - c4 Estos socios/as, ¿residen en su misma vivienda?
+- vi_c5:
+  - c5 ¿En cuántas viviendas diferentes residen estos socios/as o dueños/as trabajadores/as del negocio o actividad por cuenta propia incluyendo la suya?
+
+```{r echo=FALSE}
+grilla_int %>% select(FOLIO,N_FORMULARIO, validador_full, validador5, 
+                      vi_c3, c3_1, c3_2) %>% 
+  filter(validador_full==FALSE) %>% 
+  kable(., digits = 2, 
+        caption = "Variable a completar", 
+        row.names = T,
+        col.names = c("Folio","N.form", "Val.Full", "Val.e", "Val.c3", "Soc. Hombre", "Soc. Mujer"),
+        format = "latex") %>%
+  kable_classic(full_width = F) %>%
+  kable_styling(latex_options = c("striped")) %>% 
+  footnote(general = "Piloto VII Encuesta de Microemprendimiento (EME) 2022") 
+   
+
+
+```
+
+En suma, una encuesta será válida si logra un mínimo de 150 puntos. Si alguna encuesta lograse un puntaje menor a este, independiente si presenta o no variables incoherentes o sin respuesta, será considerada como no lograda y deberá volver a terreno.  
+
+
+

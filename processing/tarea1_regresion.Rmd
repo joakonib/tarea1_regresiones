@@ -1,0 +1,97 @@
+---
+title: |
+ | \vspace{5cm} Tarea 1: Análisis de Regresión Múltiple
+author: | 
+ | 
+ | \vspace{6cm} Joaquín Galdames Hernández
+date: "`r Sys.Date()`"
+header-includes:
+- \usepackage{titling}
+- \pretitle{\begin{center}\LARGE\includegraphics[width=9cm]{C:/git_joako/tarea_1_regresiones/logo_udp.png}\\[\bigskipamount]}
+- \posttitle{\end{center}}
+- \usepackage[fontsize=12pt]{scrextend}
+- \usepackage{floatrow}
+- \usepackage{fancyhdr}
+- \usepackage{multicol}
+- \floatsetup[figure]{capposition=top}
+- \floatsetup[table]{capposition=top}
+- \floatplacement{figure}{H}
+- \floatplacement{table}{h}
+- \pagestyle{fancy}
+- \fancyhf{}
+- \fancyfoot[R]{\thepage}
+
+output: 
+  bookdown::pdf_document2:
+    toc: no
+    highlight: tango
+    number_sections: TRUE
+    pandoc_args: !expr rmdfiltr::add_wordcount_filter()
+linkcolor: black
+urlcolor: blue
+link-citations: no
+papersize: letter
+---
+
+```{=tex}
+\begin{titlingpage}
+\centering
+Magíster en Métodos para la Investigación Social
+\end{titlingpage}
+```
+```{=tex}
+\newpage
+\setcounter{page}{2}
+```
+\newpage
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(comment=NA, prompt=FALSE, cache=FALSE, echo=TRUE, results='asis', message = F, warning = F, eval = T)
+summarytools::st_options(bootstrap.css     = FALSE,
+           plain.ascii       = FALSE,   
+           style             = "rmarkdown",
+           dfSummary.silent  = TRUE, 
+           footnote          = NA,
+           subtitle.emphasis = FALSE,
+           headings =  F,
+           lang =  "es")
+summarytools::st_css()
+```
+
+```{r, include=FALSE}
+library(haven)
+library(correlation)
+library(tidyverse)
+library(kableExtra)
+
+datos <- read_sav("C:/git_joako/tarea_1_regresiones/processing/17604010.sav")
+vars_cor <- datos[, c("cuidarse", "riesgo", "edad")]
+cors <- correlation(vars_cor)
+```
+```{r  echo=FALSE}
+kable(
+  cors,
+  format = "latex")
+```
+
+
+
+
+
+
+# Análisis de Correlación
+
+¿Existen correlaciones significativas entre el cumplimiento de las medidas de cuidado, la percepción de riesgo y la edad de las personas? Analiza los resultados entregados. Opcionalmente, puedes ejecutar los análisis con la base de datos correspondiente a tu RUT y la sintaxis disponible en Posit Cloud. Para cada correlación, responde los siguientes ejercicios
+
+## Describe la dirección y fuerza de la asociación. Realiza este ejercicio aún si la correlación no fuera estadísticamente significativa
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+## Describe si podemos inferir que existe una asociación significativa entre ambas variables. Considera un 95% de confianza
+
+
+\newpage
+
+# Regresión Lineal Múltiple
