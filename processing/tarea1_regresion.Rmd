@@ -69,9 +69,10 @@ vars_cor <- datos[, c("cuidarse", "riesgo", "edad")]
 cors <- correlation(vars_cor)
 ```
 ```{r  echo=FALSE}
-kable(
-  cors,
-  format = "latex")
+cors %>%
+  select(-CI_low, -CI_high, -CI) %>%
+  mutate(across(where(is.numeric), round, digits = 3)) %>%
+  kable(format = "latex")
 ```
 
 
