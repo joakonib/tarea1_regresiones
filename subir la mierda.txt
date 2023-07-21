@@ -1,0 +1,25 @@
+
+Ejercicio 1.
+Cuidarse y riesgo <- significativo 
+hay una correlación entre cuidarse y la percepción de riesgo, significativo al 95% de confianza
+a medida que más me cuido el riesgo es menor.
+
+cuidarse y edad <- no significativo
+suponiendo que el p-valor fuese significativo, se asume que hay una leve correlación; es decir que si una aumenta la otra
+a medida que aumenta la edad la gente se cuida más
+
+riesgo y edad <- significativo
+hay una correlación positiva entre la edad y la percepción de riesgo, a medida que se aumenta la edad es posible sostener que hay mayor riesgo.
+
+Ejercicio 2.
+
+solo es significativo percepción de riesgo
+
+latex, ecuación de la recta significativa
+\begin{equation*}
+\text{cuidarse}_i = 3.33 + 0.263 \times \text{riesgo}_i + e_i
+\end{equation*}
+
+\begin{equation*}
+\text{cuidarse}_i = 3.33 + 0.263 \times \text{riesgo}_i - 0.148\times \text{trabaja}_i -0.062\times \text{sexo}_i + 0.001\times \text{edad}_i + e_i
+\end{equation*}
